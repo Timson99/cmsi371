@@ -1,0 +1,16 @@
+﻿  main.cpp
+main.obj : error LNK2019: unresolved external symbol __imp__glBegin@4 referenced in function "void __cdecl display(void)" (?display@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol __imp__glClear@4 referenced in function "void __cdecl display(void)" (?display@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol __imp__glClearColor@16 referenced in function "void __cdecl setup(void)" (?setup@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol __imp__glColor3f@12 referenced in function "void __cdecl display(void)" (?display@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol __imp__glEnd@0 referenced in function "void __cdecl display(void)" (?display@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol __imp__glPointSize@4 referenced in function "void __cdecl display(void)" (?display@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol __imp__glVertex2f@8 referenced in function "void __cdecl display(void)" (?display@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol _glutInitWindowSize referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glutInitDisplayMode referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glutMainLoop referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glutSwapBuffers referenced in function "void __cdecl display(void)" (?display@@YAXXZ)
+main.obj : error LNK2019: unresolved external symbol _glutDisplayFunc referenced in function _main
+main.obj : error LNK2019: unresolved external symbol ___glutInitWithExit referenced in function _glutInit_ATEXIT_HACK
+main.obj : error LNK2019: unresolved external symbol ___glutCreateWindowWithExit referenced in function _glutCreateWindow_ATEXIT_HACK
+C:\ComputerScience\CMSI_371\Project_Files\OpenGL_Test\Debug\OpenGL_Test.exe : fatal error LNK1120: 14 unresolved externals
