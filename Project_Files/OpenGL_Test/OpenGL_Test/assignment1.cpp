@@ -16,8 +16,8 @@
 
 
 #ifdef _WIN32
-#include "GL/glew.h"
-#include "GL/freeglut.h"
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 #elif __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
@@ -49,12 +49,29 @@ void setup() {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
+///*
+vector<Vertex> generate_points(vector<Vertex> control_points) {
+	if(control_points.size() <= 1) {
+		return control_points;
+	}
+	vector<Vertex> midpoints;
+	vector<Vertex> bezier_points;
+	for (int j = 0; j < control_points.size() - 1; j++) {
+			Vertex midpoint{0.5f * (control_points[j].get_x() + control_points[j+1].get_x()),
+					 0.5f * (control_points[j].get_y() + control_points[j+1].get_y()) };
+			midpoints.push_back(midpoint);
+	}
+	bezier_points.insert(bezier_points.begin(), { control_points[0], control_points[control_points.size() - 1]});
+	vector<Vertex> recursion_points = generate_points(midpoints);
+	bezier_points.insert(bezier_points.begin() + 1, recursion_points.begin(), recursion_points.end());
+	return bezier_points;
+}
+//*/
+/*
 vector<Vertex> generate_points(vector<Vertex> control_points) {
 	vector<Vertex> points{ control_points };
 	vector<Vertex> midpoints;
 	vector<Vertex> bezier_points;
-	// TODO:
-	// Generate points for a given Chaikin or Bezier curve iteration
 	while (points.size() > 1) {
 		bezier_points.insert(bezier_points.begin() + bezier_points.size()/2, {points[0], points[points.size() - 1]});
 
@@ -73,7 +90,7 @@ vector<Vertex> generate_points(vector<Vertex> control_points) {
 	bezier_points.insert(bezier_points.begin() + bezier_points.size() / 2, points[0]);
 	return bezier_points;
 }
-
+//*/
 void draw_curve(vector<Vertex> control_points, int n_iter) {
 
 	vector<Vertex> current_points = control_points;
@@ -96,6 +113,8 @@ void draw_curve(vector<Vertex> control_points, int n_iter) {
 	}
 	glEnd();
 
+	/*
+
 	//Original Points
 	glPointSize(5.0f);
 	glBegin(GL_POINTS);
@@ -113,6 +132,7 @@ void draw_curve(vector<Vertex> control_points, int n_iter) {
 	}
 	glEnd();
 
+	//*/
 
 	//Lines Between Bezier Points
 	glLineWidth(1.0f);
@@ -139,10 +159,19 @@ void display() {
 		//Left Shoulder
 		{ Vertex{0.99f, -1.0f}, Vertex{1.0f, -0.48f}, Vertex{0.48f, -0.56f}, 
 		  Vertex{0.32f, -0.23f} },
-		//
-		{ Vertex{0.99f, -1.0f}, Vertex{1.0f, -0.48f}, Vertex{0.48f, -0.56f},
-									  Vertex{0.32f, -0.23f} },
-
+		//Beard
+		{ Vertex{-0.21f, -0.06f}, Vertex{-0.33f, -1.1f}, Vertex{0.05f, -1.1f},
+		  Vertex{0.37f, -0.07f} },
+		//Left Side
+		{ Vertex{0.37f, -0.07f}, Vertex{0.39f, 0.12f}, Vertex{0.33f, 0.18f}, Vertex{0.41f, 0.22f}, Vertex{0.41f, 0.3f}, },
+		//Left Head
+		{ Vertex{0.41f, 0.3f}, Vertex{0.49f, 0.99f}, Vertex{0.0f, 0.931f}, },
+		//Right Head
+		{ Vertex{0.0f, 0.931f}, Vertex{-0.41f, 0.93f}, Vertex{-0.21f, 0.355f}, Vertex{-0.21f, -0.06f}, },
+		//Coat Left
+		{ Vertex{0.32f, -0.23f}, Vertex{0.19f, -0.61f}, Vertex{-0.09f, -1.0f}, },
+		//Coat Right
+		{ Vertex{-0.225f, -0.452f}, Vertex{-0.368f, -0.682f}, Vertex{-0.411f, -1.0f}, }
 	};
 
 	for (auto& control_points : curve_list) {
