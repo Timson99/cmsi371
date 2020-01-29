@@ -50,42 +50,28 @@ void setup() {
 }
 
 vector<Vertex> generate_points(vector<Vertex> control_points) {
-	vector<Vertex> P;
-	vector<Vertex> M;
-	vector<Vertex> Q;
-	P = control_points;
-
+	vector<Vertex> points{ control_points };
+	vector<Vertex> midpoints;
+	vector<Vertex> bezier_points;
 	// TODO:
 	// Generate points for a given Chaikin or Bezier curve iteration
+	while (points.size() > 1) {
+		bezier_points.insert(bezier_points.begin() + bezier_points.size()/2, {points[0], points[points.size() - 1]});
 
-	Q.push_back(P[0]);
-	Q.push_back(P[P.size() - 1]);
-
-	while (P.size() > 1) {
-
-		
-
-		for (int j = 0; j < P.size() - 1; j++) {
-			Vertex m{0.5f * (P[j].get_x() + P[j+1].get_x()), 
-				     0.5f * (P[j].get_y() + P[j+1].get_y()) };
-			M.push_back(m);
+		for (int j = 0; j < points.size() - 1; j++) {
+			Vertex midpoint{0.5f * (points[j].get_x() + points[j+1].get_x()),
+				     0.5f * (points[j].get_y() + points[j+1].get_y()) };
+			midpoints.push_back(midpoint);
 			//Q.insert(Q.begin() + j + i + 1, m);
-			cout << "Midpoint: " << m.get_x() << "," << m.get_y() << endl;
+			//cout << "Midpoint: " << m.get_x() << "," << m.get_y() << endl;
 		}
-
-		
-		P = M;
-		Q.insert(Q.begin() + Q.size()/2, P[0]);
-		Q.insert(Q.end() - Q.size()/2, P[P.size() - 1]);
+		points = midpoints;
 		//Q.insert(Q.end() - 1, M.begin(), M.end());
-		M.clear();
-		cout << "Ran Outer: i=" << " P.size() = "<< P.size() << endl;
+		midpoints.clear();
+		//cout << "Ran Outer: i=" << " P.size() = "<< P.size() << endl;
 	}
-
-
-	//
-
-	return Q;
+	bezier_points.insert(bezier_points.begin() + bezier_points.size() / 2, points[0]);
+	return bezier_points;
 }
 
 void draw_curve(vector<Vertex> control_points, int n_iter) {
@@ -93,24 +79,48 @@ void draw_curve(vector<Vertex> control_points, int n_iter) {
 	vector<Vertex> current_points = control_points;
 	for (int i = 0; i < n_iter; i++) {
 		current_points = generate_points(current_points);
-		for (auto& point : current_points) {
-			cout << " (" << point.get_x() << "," << point.get_y() << ")";
+		//for (auto& point : current_points) {
+			//cout << " (" << point.get_x() << "," << point.get_y() << ")";
 
-		}
-		cout << endl;
-		cout << "Iterate" << endl;
+		//}
+		//cout << endl;
+		//cout << "Iterate" << endl;
 	}
 
-	glPointSize(5.0f);
+	//Invisible Bexier Points
+	glPointSize(1.0f);
 	glBegin(GL_POINTS);
 	for (auto& v : current_points) {
-		cout << v.get_x() << " " << v.get_y() << endl;
+		//cout << v.get_x() << " " << v.get_y() << endl;
 		glVertex2f(v.get_x(), v.get_y());
 	}
+	glEnd();
 
-	//glVertex2f(-0.25f,0);
-	//glVertex2f(0.25,0);
+	//Original Points
+	glPointSize(5.0f);
+	glBegin(GL_POINTS);
+	for (auto& v : control_points) {
+		glVertex2f(v.get_x(), v.get_y());
+	}
+	glEnd();
 
+	//Lines Between Original Points
+	glLineWidth(2.0f);
+	glBegin(GL_LINES);
+	for (int i = 0; i < control_points.size() - 1; i++) {
+		glVertex2f(control_points[i].get_x(), control_points[i].get_y());
+		glVertex2f(control_points[i + 1].get_x(), control_points[i + 1].get_y());
+	}
+	glEnd();
+
+
+	//Lines Between Bezier Points
+	glLineWidth(1.0f);
+	glBegin(GL_LINES);
+	for (int i = 0; i < current_points.size() - 1; i++) {
+		glVertex2f(current_points[i].get_x(), current_points[i].get_y());
+		glVertex2f(current_points[i+1].get_x(), current_points[i+1].get_y());
+	}
 	glEnd();
 
 }
@@ -120,12 +130,24 @@ void display() {
 	// Set our color to black (R, G, B)
 	glColor3f(0.0f, 0.0f, 0.0f);
 
-	
+	int n_iterations = 5;
 
-	//
-	vector<Vertex> control_points{ Vertex{-0.5f, -0.5f}, Vertex{0.0f, 0.5},
-								   Vertex{0.5f, -0.5f} };
-	draw_curve(control_points, 6);
+	vector<vector<Vertex>> curve_list = { 
+		//Right Shoulder
+		{ Vertex{-0.72f, -1.0f},  Vertex{-0.6f, -0.93f}, Vertex{-0.78f, -0.5f}, 
+		  Vertex{-0.28f, -0.53f}, Vertex{-0.23f, -0.39f}},
+		//Left Shoulder
+		{ Vertex{0.99f, -1.0f}, Vertex{1.0f, -0.48f}, Vertex{0.48f, -0.56f}, 
+		  Vertex{0.32f, -0.23f} },
+		//
+		{ Vertex{0.99f, -1.0f}, Vertex{1.0f, -0.48f}, Vertex{0.48f, -0.56f},
+									  Vertex{0.32f, -0.23f} },
+
+	};
+
+	for (auto& control_points : curve_list) {
+		draw_curve(control_points, n_iterations);
+	}
 	// TODO:
 	// Draw cartoon
 
