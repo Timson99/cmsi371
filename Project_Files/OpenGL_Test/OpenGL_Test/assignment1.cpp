@@ -2,12 +2,11 @@
  assignment1.cpp
  Assignment-1: Cartoonify
 
- Name: Wong, Alex (Please write your name in Last Name, First Name format)
+ Name: Herrmann, Tim
 
- Collaborators: Doe, John; Doe, Jane
- ** Note: although the assignment should be completed individually
- you may speak with classmates on high level algorithmic concepts. Please
- list their names in this section
+ Collaborators: Luis Garcia
+
+ Project Summary:
 
  Project Summary: A short paragraph (3-4 sentences) describing the work you
  did for the project: e.g. did you use the Chaikin's or Bezier's algorithm?
@@ -49,7 +48,12 @@ void setup() {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-///*
+
+/***********************
+ * RECURSIVE DEFINITION
+ ***********************/
+
+/*
 vector<Vertex> generate_points(vector<Vertex> control_points) {
 	if(control_points.size() <= 1) {
 		return control_points;
@@ -58,7 +62,7 @@ vector<Vertex> generate_points(vector<Vertex> control_points) {
 	vector<Vertex> bezier_points;
 	for (int j = 0; j < control_points.size() - 1; j++) {
 			Vertex midpoint{0.5f * (control_points[j].get_x() + control_points[j+1].get_x()),
-					 0.5f * (control_points[j].get_y() + control_points[j+1].get_y()) };
+				0.5f * (control_points[j].get_y() + control_points[j+1].get_y()) };
 			midpoints.push_back(midpoint);
 	}
 	bezier_points.insert(bezier_points.begin(), { control_points[0], control_points[control_points.size() - 1]});
@@ -67,28 +71,28 @@ vector<Vertex> generate_points(vector<Vertex> control_points) {
 	return bezier_points;
 }
 //*/
-/*
+
+/*************************
+ * ITERATIVE DEFINITION
+ *************************/
+///*
 vector<Vertex> generate_points(vector<Vertex> control_points) {
 	vector<Vertex> points{ control_points };
 	vector<Vertex> midpoints;
-	vector<Vertex> bezier_points;
-	while (points.size() > 1) {
-		bezier_points.insert(bezier_points.begin() + bezier_points.size()/2, {points[0], points[points.size() - 1]});
+	vector<Vertex> bezier_pts;
 
+	while (points.size() > 1) {
+		bezier_pts.insert(bezier_pts.begin() + bezier_pts.size()/2, {points.front(), points.back()});
 		for (int j = 0; j < points.size() - 1; j++) {
-			Vertex midpoint{0.5f * (points[j].get_x() + points[j+1].get_x()),
-				     0.5f * (points[j].get_y() + points[j+1].get_y()) };
+			Vertex midpoint{  0.5f * (points[j].get_x() + points[j+1].get_x()), 
+				              0.5f * (points[j].get_y() + points[j+1].get_y()) };
 			midpoints.push_back(midpoint);
-			//Q.insert(Q.begin() + j + i + 1, m);
-			//cout << "Midpoint: " << m.get_x() << "," << m.get_y() << endl;
 		}
 		points = midpoints;
-		//Q.insert(Q.end() - 1, M.begin(), M.end());
 		midpoints.clear();
-		//cout << "Ran Outer: i=" << " P.size() = "<< P.size() << endl;
 	}
-	bezier_points.insert(bezier_points.begin() + bezier_points.size() / 2, points[0]);
-	return bezier_points;
+	bezier_pts.insert(bezier_pts.begin() + bezier_pts.size() / 2, points.front());
+	return bezier_pts;
 }
 //*/
 void draw_curve(vector<Vertex> control_points, int n_iter) {
@@ -96,24 +100,16 @@ void draw_curve(vector<Vertex> control_points, int n_iter) {
 	vector<Vertex> current_points = control_points;
 	for (int i = 0; i < n_iter; i++) {
 		current_points = generate_points(current_points);
-		//for (auto& point : current_points) {
-			//cout << " (" << point.get_x() << "," << point.get_y() << ")";
-
-		//}
-		//cout << endl;
-		//cout << "Iterate" << endl;
 	}
 
-	//Invisible Bexier Points
+	/*
+	//Bexier Points
 	glPointSize(1.0f);
 	glBegin(GL_POINTS);
 	for (auto& v : current_points) {
-		//cout << v.get_x() << " " << v.get_y() << endl;
 		glVertex2f(v.get_x(), v.get_y());
 	}
 	glEnd();
-
-	/*
 
 	//Original Points
 	glPointSize(5.0f);
@@ -150,15 +146,15 @@ void display() {
 	// Set our color to black (R, G, B)
 	glColor3f(0.0f, 0.0f, 0.0f);
 
-	int n_iterations = 5;
+	int n_iterations = 6;
 
 	vector<vector<Vertex>> curve_list = { 
 		//Right Shoulder
 		{ Vertex{-0.72f, -1.0f},  Vertex{-0.6f, -0.93f}, Vertex{-0.78f, -0.5f}, 
-		  Vertex{-0.28f, -0.53f}, Vertex{-0.23f, -0.39f}},
+		  Vertex{-0.28f, -0.53f}, Vertex{-0.225f, -0.39f}},
 		//Left Shoulder
 		{ Vertex{0.99f, -1.0f}, Vertex{1.0f, -0.48f}, Vertex{0.48f, -0.56f}, 
-		  Vertex{0.32f, -0.23f} },
+		  Vertex{0.315f, -0.23f} },
 		//Beard
 		{ Vertex{-0.21f, -0.06f}, Vertex{-0.33f, -1.1f}, Vertex{0.05f, -1.1f},
 		  Vertex{0.37f, -0.07f} },
@@ -171,14 +167,18 @@ void display() {
 		//Coat Left
 		{ Vertex{0.32f, -0.23f}, Vertex{0.19f, -0.61f}, Vertex{-0.09f, -1.0f}, },
 		//Coat Right
-		{ Vertex{-0.225f, -0.452f}, Vertex{-0.368f, -0.682f}, Vertex{-0.411f, -1.0f}, }
+		{ Vertex{-0.22f, -0.452f}, Vertex{-0.368f, -0.682f}, Vertex{-0.411f, -1.0f}, },
+		//Beard Line
+		{ Vertex{-0.205f, 0.177f}, Vertex{-0.197f, -0.933f}, Vertex{-0.01, 1.588f}, Vertex{0.205f, -0.93f}, Vertex{0.34f, 0.158f}},
+		//Nose
+		{ Vertex{-0.004f, 0.339f}, Vertex{0.048f, 0.24f}, Vertex{-0.182f, 0.1f}, Vertex{-0.006f, 0.035f}, },
+		//Mpustache
+		{ Vertex{-0.133f, -0.154f}, Vertex{-0.02f, -0.096f}, Vertex{0.007f, 0.05f}, Vertex{0.02f, -0.09f}, Vertex{0.1f, -0.15f}, },
 	};
 
 	for (auto& control_points : curve_list) {
 		draw_curve(control_points, n_iterations);
 	}
-	// TODO:
-	// Draw cartoon
 
 	glutSwapBuffers();
 }
