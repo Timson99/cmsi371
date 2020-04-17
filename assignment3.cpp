@@ -181,35 +181,35 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
 
 // Builds a unit cube centered at the origin
 vector<GLfloat> build_cube() {
-	vector<GLfloat> result;
-	vector<GLfloat> frontFace = mat_mult(
-									translation_matrix(0,0, 0.5), 
-									to_homogeneous_coord(init_plane()));
-	vector<GLfloat> backFace =	mat_mult(
-									translation_matrix(0, 0, -0.5),
-									mat_mult(
-										rotation_matrix_y(180), 
-										to_homogeneous_coord(init_plane())));
-	vector<GLfloat> rightFace = mat_mult(
-									translation_matrix(0.5, 0, 0),
-									mat_mult(
-										rotation_matrix_y(90),
-										to_homogeneous_coord(init_plane())));
-	vector<GLfloat> leftFace = mat_mult(
-									translation_matrix(-0.5, 0, 0),
-									mat_mult(
-										rotation_matrix_y(-90),
-										to_homogeneous_coord(init_plane())));
-	vector<GLfloat> topFace =   mat_mult(
-									translation_matrix(0, 0.5, 0),
-									mat_mult(
-										rotation_matrix_x(-90),
-										to_homogeneous_coord(init_plane())));
-	vector<GLfloat> bottomFace = mat_mult(
-									translation_matrix(0, -0.5, 0),
-									mat_mult(
-										rotation_matrix_x(90),
-										to_homogeneous_coord(init_plane())));
+    vector<GLfloat> result;
+    vector<GLfloat> frontFace = mat_mult(
+                                    translation_matrix(0,0, 0.5), 
+                                    to_homogeneous_coord(init_plane()));
+    vector<GLfloat> backFace =	mat_mult(
+                                    translation_matrix(0, 0, -0.5),
+                                    mat_mult(
+	                                    rotation_matrix_y(180), 
+	                                    to_homogeneous_coord(init_plane())));
+    vector<GLfloat> rightFace = mat_mult(
+                                    translation_matrix(0.5, 0, 0),
+                                        mat_mult(
+	                                        rotation_matrix_y(90),
+	                                        to_homogeneous_coord(init_plane())));
+    vector<GLfloat> leftFace = mat_mult(
+                                    translation_matrix(-0.5, 0, 0),
+                                    mat_mult(
+	                                    rotation_matrix_y(-90),
+	                                    to_homogeneous_coord(init_plane())));
+    vector<GLfloat> topFace =   mat_mult(
+                                    translation_matrix(0, 0.5, 0),
+                                    mat_mult(
+	                                    rotation_matrix_x(-90),
+	                                    to_homogeneous_coord(init_plane())));
+    vector<GLfloat> bottomFace = mat_mult(
+                                    translation_matrix(0, -0.5, 0),
+                                    mat_mult(
+	                                    rotation_matrix_x(90),
+	                                    to_homogeneous_coord(init_plane())));
 
 	vector<vector<GLfloat>> cubeFaces = { frontFace , backFace , rightFace , leftFace  , topFace  , bottomFace };
 
