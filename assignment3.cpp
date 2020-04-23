@@ -1,15 +1,10 @@
 /***
  Assignment-3: Geometric Modeling of a Scene
 
- Name: Wong, Alex (Please write your name in Last Name, First Name format)
+ Name: Herrmann, Timothy
+ Collaborators: None
 
- Collaborators: Doe, John; Doe, Jane
- ** Note: although the assignment should be completed individually
- you may speak with classmates on high level algorithmic concepts. Please
- list their names in this section
-
- Project Summary: A short paragraph (3-4 sentences) describing the work you
- did for the project.
+ Project Summary: 
  ***/
 
 
@@ -178,7 +173,7 @@ vector<GLfloat> composeItems(vector<vector<GLfloat>> items) {
     return result;
 }
 
-//Given multiples 
+//Accepts multiple transformations in an array for matirx multiplication 
 vector<GLfloat> mat_mult(vector<vector<GLfloat>> matrices, vector<GLfloat> points) {
     vector<GLfloat> result = points;
     for (int i = matrices.size()-1; i >= 0; i--) {
@@ -240,22 +235,23 @@ void init_camera() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	// Define a 50 degree field of view, 1:1 aspect ratio, near and far planes at 3 and 7
+	// Define a 50 degree field of view, 1:1 aspect ratio, near and far planes at 3 and 80
 	gluPerspective(50.0, 1.0, 3.0, 80.0);
-	// Position camera at (2, 6, 5), attention at (0, 0, 0), up at (0, 1, 0)
-	//gluLookAt(20.0, 6.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-    gluLookAt(20.0, 6.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	// Position camera at (20, 13, 20), attention at (0, 0, 0), up at (0, 1, 0)
+    gluLookAt(20.0, 13.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 }
 
-
+//Builds a basic table
 vector<GLfloat> build_table() {
+    //TableTop
     vector<GLfloat> tabletopCenter = mat_mult(translation_matrix(0, 1.75, 0), mat_mult(scaling_matrix(4, 0.5, 4), build_cube()));
-    vector<GLfloat> tabletopRim1 = mat_mult(translation_matrix(2.25, 1.75, 0), mat_mult(scaling_matrix(0.5, 0.5, 5), build_cube()));
-    vector<GLfloat> tabletopRim2 = mat_mult(translation_matrix(-2.25, 1.75, 0), mat_mult(scaling_matrix(0.5, 0.5, 5), build_cube()));
-    vector<GLfloat> tabletopRim3 = mat_mult(translation_matrix(0, 1.75, 2.25), mat_mult(scaling_matrix(4, 0.5, 0.5), build_cube()));
-    vector<GLfloat> tabletopRim4 = mat_mult(translation_matrix(0, 1.75, -2.25), mat_mult(scaling_matrix(4, 0.5, 0.5), build_cube()));
+    vector<GLfloat> tabletopRim1 = mat_mult(translation_matrix(2.25, 1.75, 0), mat_mult(scaling_matrix(0.5, 0.5, 4), build_cube()));
+    vector<GLfloat> tabletopRim2 = mat_mult(translation_matrix(-2.25, 1.75, 0), mat_mult(scaling_matrix(0.5, 0.5, 4), build_cube()));
+    vector<GLfloat> tabletopRim3 = mat_mult(translation_matrix(0, 1.75, 2.25), mat_mult(scaling_matrix(5, 0.5, 0.5), build_cube()));
+    vector<GLfloat> tabletopRim4 = mat_mult(translation_matrix(0, 1.75, -2.25), mat_mult(scaling_matrix(5, 0.5, 0.5), build_cube()));
     vector<GLfloat> tabletop = composeItems({ tabletopCenter , tabletopRim1 , tabletopRim2 ,tabletopRim3 ,tabletopRim4 });
+    //Legs
     vector<GLfloat> tableg0 = mat_mult(scaling_matrix(0.5, 2, 0.5), build_cube());
     vector<GLfloat> tableg1 = mat_mult(translation_matrix(2, 0.5, 2), tableg0);
     vector<GLfloat> tableg2 = mat_mult(translation_matrix(-2, 0.5, 2), tableg0);
@@ -264,6 +260,7 @@ vector<GLfloat> build_table() {
     return composeItems({ tabletop, tableg1, tableg2, tableg3, tableg4 });
 }
 
+//Builds a basic right angled couch
 vector<GLfloat> build_couch() {
     //Structure
     vector<GLfloat> bottom = mat_mult(scaling_matrix(10.5, 1, 5), build_cube());
@@ -277,62 +274,83 @@ vector<GLfloat> build_couch() {
     vector<GLfloat> cushions2 = mat_mult({ translation_matrix(-2.6, 0, 0) }, cushions0);
     //Assemble Main Sections
     vector<GLfloat> couchSection0 = composeItems({ bottom, side, back, cushions1, cushions2 });
-    vector<GLfloat> couchSection1 = mat_mult({ translation_matrix(0, 0, -7.6) }, couchSection0);
-    vector<GLfloat> couchSection2 = mat_mult({ translation_matrix(-7.6, 0, 0), rotation_matrix_y(90), scaling_matrix(-1,1,1) }, couchSection0);
+    vector<GLfloat> couchSection1 = mat_mult({ translation_matrix(0, 0, -7.5) }, couchSection0);
+    vector<GLfloat> couchSection2 = mat_mult({ translation_matrix(-7.5, 0, 0), rotation_matrix_y(90), scaling_matrix(-1,1,1) }, couchSection0);
     //Corner Section
     vector<GLfloat> cornerBottom = mat_mult(scaling_matrix(5, 1, 5), build_cube());
-    vector<GLfloat> cornerCushion = cushions0;
-    vector<GLfloat> cornerBackCushion = mat_mult(rotation_matrix_y(90), backCushion);
+    vector<GLfloat> cornerCushion = mat_mult(scaling_matrix(0.93, 1, 0.93), cushions0);
+    vector<GLfloat> cornerBackCushion = mat_mult({translation_matrix(-0.1,0,0.25), rotation_matrix_y(90), scaling_matrix(0.78, 1, 0.93) }, backCushion);
     vector<GLfloat> couchCorner = composeItems({ cornerBottom, cornerCushion, cornerBackCushion });
     vector<GLfloat> couchSection3 = mat_mult({ translation_matrix(-7.5, 0, -7.5) }, couchCorner);
     return composeItems({ couchSection1, couchSection2, couchSection3 });
 }
 
+//Builds a basic lamp
 vector<GLfloat> build_lamp() {
-    return composeItems({});
-}
-
-vector<GLfloat> build_candle() {
-    return composeItems({ });
-}
-
-vector<GLfloat> build_piano() {
-    vector<GLfloat> back = mat_mult({ translation_matrix(8, 0, 6), scaling_matrix(10,3,1.5) }, build_cube());
-    vector<GLfloat> keyBottom = mat_mult({ translation_matrix(8, 0, 7.75), scaling_matrix(10,1,2) }, build_cube());
-    vector<GLfloat> white_key = mat_mult({ translation_matrix(4.25, 0.75, 7.5), scaling_matrix(0.17,0.17,1.2) }, build_cube());
-
-    vector<vector<GLfloat>> keys;
-    for (int i = 0; i < 52; i++) {
-        keys.push_back(mat_mult(translation_matrix(i * (0.18), 0, 0), white_key));
+    vector<GLfloat> base = mat_mult({ scaling_matrix(0.75,3,0.75) }, build_cube());
+    vector<GLfloat> shadeBase = mat_mult({ translation_matrix(0,1,0), scaling_matrix(2,0.25,2) }, build_cube());
+    vector<vector<GLfloat>> lampShadeSections;
+    float iterations = 10.0f;
+    for (int i = 0; i < iterations; i++) {
+        lampShadeSections.push_back(mat_mult({ translation_matrix(0, 0.25 * (i + 1), 0), 
+                                              scaling_matrix(0.8 - 0.8 * (i / (iterations*2)), 1, 
+                                                             0.8 - 0.8 * (i/(iterations*2))) }, shadeBase));
     }
-
-    vector<GLfloat> keybed = composeItems(keys);
-
-    return composeItems({ back, keyBottom, keybed });
+    vector<GLfloat> lampShade = composeItems(lampShadeSections);
+    return composeItems({ base, lampShade});
 }
 
+//Builds a basic candle
+vector<GLfloat> build_candle() {
+    vector<GLfloat> holder = mat_mult({ translation_matrix(0, 0, 0), scaling_matrix(1.5,0.15,1.5) }, build_cube());
+    vector<GLfloat> candle = mat_mult({ translation_matrix(0, 0.65, 0), scaling_matrix(0.5,1,0.5) }, build_cube());
+    return composeItems({ holder , candle});
+}
+
+//Builds a basic pillow
 vector<GLfloat> build_pillow() {
-    return composeItems({ });
+    vector<GLfloat> base = mat_mult({ translation_matrix(0, 0, 0), scaling_matrix(1,1,0.03) }, build_cube());
+    vector<vector<GLfloat>> frontSections;
+    int iterations = 9;
+    for (int i = 0; i < iterations; i++) {
+        frontSections.push_back(mat_mult({ translation_matrix(0, 0, 0.03*(i+1)), 
+                                           scaling_matrix(0.9 - 0.9 *(pow(i,2) /pow(iterations,2)),
+                                                          0.9 - 0.9 *(pow(i,2) /pow(iterations,2)), 1) }, base));
+    }
+    vector<GLfloat> front = composeItems(frontSections);
+    vector<GLfloat> back = mat_mult(rotation_matrix_y(180), front);
+    return composeItems({ base, front, back});
 }
 
+//Builds a basic ottoman
 vector<GLfloat> build_ottoman() {
-    return composeItems({ });
+    vector<GLfloat> bottomSection = mat_mult({ translation_matrix(0, 0, 0), scaling_matrix(5,1,3) }, build_cube());
+    vector<GLfloat> topSection = mat_mult({ translation_matrix(0, 1, 0) }, bottomSection);
+    return composeItems({ bottomSection , topSection });
 }
 
 
 // Construct the scene using objects built from cubes/prisms
 vector<GLfloat> init_scene() {
-	vector<GLfloat> scene;
-    vector<GLfloat> basicTable =  build_table();
+    vector<GLfloat> scene;
+    //Build Basic Furniture Building Bocks
+    vector<GLfloat> basicTable = build_table();
     vector<GLfloat> basicCouch = build_couch();
-    //vector<GLfloat> basicOttoman = build_ottoman();
-    //vector<GLfloat> basicPillow = build_pillow();
-    //vector<GLfloat> basicCandle = build_candle();
-    //vector<GLfloat> basicLamp = build_lamp();
-    //vector<GLfloat> basicPiano = build_piano();
-    //vector<GLfloat> floorPlane = mat_mult({ scaling_matrix(40, 40, 40), rotation_matrix_x(90) }, init_plane());
-
-    scene = to_cartesian_coord(composeItems({ basicCouch, basicTable }));
+    vector<GLfloat> basicOttoman = build_ottoman();
+    vector<GLfloat> basicPillow = build_pillow();
+    vector<GLfloat> basicCandle = build_candle();
+    vector<GLfloat> basicLamp = build_lamp();
+    //Set Furniture in Scene
+    vector<GLfloat> coffeeTable = mat_mult({ translation_matrix(1,0,-1.3), scaling_matrix(1.6, 1, 0.82) }, basicTable);
+    vector<GLfloat> readingTable = mat_mult({ translation_matrix(-8,0, 9), scaling_matrix(1, 1, 1) }, basicTable);
+    vector<GLfloat> lamp = mat_mult(translation_matrix(-8, 3, 9), basicLamp);
+    vector<GLfloat> candle = mat_mult({ translation_matrix(1,2.5,-1.3), scaling_matrix(1, 1, 1) }, basicCandle);
+    vector<GLfloat> ottoman = mat_mult({ translation_matrix(1,0,4.3), scaling_matrix(1.15, 1.15, 1.15) }, basicOttoman);
+    vector<GLfloat> pillow1 = mat_mult({ translation_matrix(4,3,-8), rotation_matrix_y(-25), rotation_matrix_x(-10), scaling_matrix(2.7, 2.7, 2.7) }, basicPillow);
+    vector<GLfloat> pillow2 = mat_mult({ translation_matrix(-8,3,4), rotation_matrix_y(115), rotation_matrix_x(-10), scaling_matrix(2.7, 2.7, 2.7) }, basicPillow);
+    vector<GLfloat> pillow3 = mat_mult({ translation_matrix(-8,3,-8), rotation_matrix_y(230), rotation_matrix_x(10), scaling_matrix(2.7, 2.7, 2.7) }, basicPillow);
+    //vector<GLfloat> floorPlane = mat_mult({ translation_matrix(0,-0.5, 0), scaling_matrix(100, 100, 100), rotation_matrix_x(90) }, init_plane());
+    scene = to_cartesian_coord(mat_mult(translation_matrix(3, 0, 0), composeItems({ basicCouch, coffeeTable, readingTable, ottoman,  pillow1, pillow2, pillow3, lamp, candle })));
 	return scene;
 }
 
@@ -375,7 +393,8 @@ void display_func() {
 }
 
 void idle_func() {
-	THETA = THETA + 0.06;
+    //THETA = THETA + 0.03;
+	THETA = THETA + 0.4;
 	display_func();
 }
 
