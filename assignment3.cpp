@@ -4,9 +4,14 @@
  Name: Herrmann, Timothy
  Collaborators: None
 
- Project Summary: 
- ***/
+ Project Summary: This project demonstrates the modeling of a scene in 3D (ReferenceScene.jpg)
+ Objects in this scene include: Couches, Tables, an Ottoman, a Candle, a Lamp, and Pillows.
+ All objects in this scene are made of several components that are assembled from cubes which are 
+ assembled from six unit planes.
 
+ The helper function "composeItems" allows a list of items to be quickly composed into a single object, helping
+ in the hierarchical structuring of objects in the scene.
+ ***/
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
@@ -24,7 +29,6 @@
 #endif
 
 #define _USE_MATH_DEFINES
-
 #pragma GCC diagnostic pop
 
 #include <iostream>
@@ -33,10 +37,10 @@
 #include <vector>
 using namespace std;
 
-// If a float is < EPSILON or > -EPILSON then it should be 0
+// If a float is < EPSILON or > -EPILSON then it should be 0.
 float EPSILON = 0.000001;
 // theta is the angle to rotate the scene
-float THETA = 0.0;
+float THETA = 300.0;
 // Vector placeholders for the scene and color array
 vector<GLfloat> SCENE;
 vector<GLfloat> COLOR;
@@ -234,7 +238,6 @@ void init_camera() {
 	// Camera parameters
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
 	// Define a 50 degree field of view, 1:1 aspect ratio, near and far planes at 3 and 80
 	gluPerspective(50.0, 1.0, 3.0, 80.0);
 	// Position camera at (20, 13, 20), attention at (0, 0, 0), up at (0, 1, 0)
@@ -288,7 +291,7 @@ vector<GLfloat> build_couch() {
 //Builds a basic lamp
 vector<GLfloat> build_lamp() {
     vector<GLfloat> base = mat_mult({ scaling_matrix(0.75,3,0.75) }, build_cube());
-    vector<GLfloat> shadeBase = mat_mult({ translation_matrix(0,1,0), scaling_matrix(2,0.25,2) }, build_cube());
+    vector<GLfloat> shadeBase = mat_mult({ translation_matrix(0,1,0), scaling_matrix(3,0.25,3) }, build_cube());
     vector<vector<GLfloat>> lampShadeSections;
     float iterations = 10.0f;
     for (int i = 0; i < iterations; i++) {
@@ -333,7 +336,7 @@ vector<GLfloat> build_ottoman() {
 // Construct the scene using objects built from cubes/prisms
 vector<GLfloat> init_scene() {
     vector<GLfloat> scene;
-    //Build Basic Furniture Building Bocks
+    //Build Basic Furniture Building Blocks
     vector<GLfloat> basicTable = build_table();
     vector<GLfloat> basicCouch = build_couch();
     vector<GLfloat> basicOttoman = build_ottoman();
@@ -343,8 +346,8 @@ vector<GLfloat> init_scene() {
     //Set Furniture in Scene
     vector<GLfloat> coffeeTable = mat_mult({ translation_matrix(1,0,-1.3), scaling_matrix(1.6, 1, 0.82) }, basicTable);
     vector<GLfloat> readingTable = mat_mult({ translation_matrix(-8,0, 9), scaling_matrix(1, 1, 1) }, basicTable);
-    vector<GLfloat> lamp = mat_mult(translation_matrix(-8, 3, 9), basicLamp);
-    vector<GLfloat> candle = mat_mult({ translation_matrix(1,2.5,-1.3), scaling_matrix(1, 1, 1) }, basicCandle);
+    vector<GLfloat> lamp = mat_mult(translation_matrix(-8, 3.5, 9), basicLamp);
+    vector<GLfloat> candle = mat_mult({ translation_matrix(1,2,-1.3), scaling_matrix(1, 1, 1) }, basicCandle);
     vector<GLfloat> ottoman = mat_mult({ translation_matrix(1,0,4.3), scaling_matrix(1.15, 1.15, 1.15) }, basicOttoman);
     vector<GLfloat> pillow1 = mat_mult({ translation_matrix(4,3,-8), rotation_matrix_y(-25), rotation_matrix_x(-10), scaling_matrix(2.7, 2.7, 2.7) }, basicPillow);
     vector<GLfloat> pillow2 = mat_mult({ translation_matrix(-8,3,4), rotation_matrix_y(115), rotation_matrix_x(-10), scaling_matrix(2.7, 2.7, 2.7) }, basicPillow);
